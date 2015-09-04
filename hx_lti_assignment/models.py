@@ -22,6 +22,11 @@ class AssignmentTargets(models.Model):
 		blank=True,
 		help_text='(Optional) Please only input a URL to an externally hosted CSS file.'
 	)
+	prompt = models.TextField(
+		blank = True,
+		verbose_name = 'Directions',
+		default = None
+	)
 
 	class Meta:
 		verbose_name = "Assignment Target"
@@ -91,4 +96,3 @@ class Assignment(models.Model):
 			except:
 				return None
 		return None
-
