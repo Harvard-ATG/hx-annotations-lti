@@ -547,7 +547,8 @@
 				return 0;
 			}
 			// get the ISO8601 time w/o the TZ so it's parseable by Date()
-			// and then compare the millisecond values
+			// and then compare the millisecond values.
+			// Ex: "2015-09-22T16:30:00 UTC" => Date.parse("2015-09-22T16:30:00") => 1442939400000
 			t1 = Date.parse(a.created.split(' ', 2)[0]); 
 			t2 = Date.parse(b.created.split(' ', 2)[0]);
 			return t1 > t2;
