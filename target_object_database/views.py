@@ -9,6 +9,10 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from rest_framework import generics
 
+import logging
+
+logger = logging.getLogger(__file__)
+
 def open_target_object(request, collection_id, target_obj_id):
     try:
         targ_obj = TargetObject.objects.get(pk=target_obj_id)
@@ -29,7 +33,7 @@ def create_new_source(request):
             messages.success(request, 'Source was successfully created!')
             return redirect('hx_lti_initializer:course_admin_hub') 
         else:
-            debug_printer(form.errors)
+            logger.debug(form.errors)
     else:
         form = SourceForm()
     return render(
@@ -55,7 +59,7 @@ def edit_source(request, id):
             messages.success(request, 'Source was successfully edited!')
             return redirect('hx_lti_initializer:course_admin_hub')
         else:
-            debug_printer(form.errors)
+            logger.debug(form.errors)
     else: 
         form = SourceForm(instance=source)
     return render(
