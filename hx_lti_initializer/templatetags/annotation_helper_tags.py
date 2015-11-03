@@ -9,9 +9,56 @@ a separate data structure that could then be used to pull out the necessary info
 '''
 
 from django.template.defaulttags import register
+from django.core.urlresolvers import reverse
 from hx_lti_assignment.models import Assignment, AssignmentTargets
 from target_object_database.models import TargetObject
 import re
+
+def __get_image_target_object(collection_id, uri):
+    '''
+    This helper function attempts to find the TargetObject for an image annotation.
+    The uri is the Canvas URI, so the function attempts to find the TargetObject by the
+    Manifest URI saved in the TargetObject which is related to the Assignment.
+    '''
+    manifest_id = re.sub(r'/canvas/[^/]+$', '', uri)
+    object_filters = {
+        "assignment_id": collection_id,
+        "assignment_objects__target_content__startswith": manifest_id,
+    }
+    object_exists = Assignment.objects.filter(**object_filters).exists()
+    if object_exists:
+        target_object_pks = Assignment.objects.filter(**object_filters).values_list('assignment_objects__pk', flat=True)
+        target_objects = TargetObject.objects.filter(pk__in=target_object_pks)
+        if len(target_objects) == 1:
+            return target_objects[0]
+        else:
+            return None
+    return None
+
+
+@register.simple_tag
+def annotation_preview_url(annotation):
+    media_type = annotation['media']
+    context_id = annotation['contextId']
+    collection_id = annotation['collectionId']
+    preview_url = ''
+    
+    if media_type == 'image':
+        target_object = __get_image_target_object(collection_id, annotation['uri'])
+        if target_object is not None:
+            preview_url = reverse('hx_lti_initializer:access_annotation_target', kwargs={
+                "course_id": context_id,
+                "assignment_id": collection_id,
+                "object_id": target_object.id
+            })
+    else:
+        preview_url = reverse('hx_lti_initializer:access_annotation_target', kwargs={
+            "course_id": context_id,
+            "assignment_id": collection_id,
+            "object_id": annotation['uri'],
+        })
+
+    return preview_url
 
 @register.simple_tag
 def annotation_assignment_name(annotation):
@@ -47,21 +94,11 @@ def annotation_target_object_name(annotation):
 
     target_object_name = '' 
     if media_type == 'image':
-        manifest_id = re.sub(r'/canvas/[^/]+$', '', object_id)
-        object_filters = {
-            "assignment_id": collection_id,
-            "assignment_objects__target_content__startswith": manifest_id,
-        }
-        object_exists = Assignment.objects.filter(**object_filters).exists()
-        if object_exists:
-            target_object_pks = Assignment.objects.filter(**object_filters).values_list('assignment_objects__pk', flat=True)
-            target_objects = TargetObject.objects.filter(pk__in=target_object_pks)
-            if len(target_objects) == 0:
-                target_object_name = ''
-            elif len(target_objects) == 1:
-                target_object_name = unicode(target_objects[0])
-            else:
-                target_object_name = 'Too many objects. One of %s' % (', '.join([ unicode(t) for t in target_objects ]))
+        target_object = __get_image_target_object(collection_id, annotation['uri'])
+        if target_object is None:
+            target_object_name = ''
+        else:
+            target_object_name = unicode(target_object)
     else:
         object_exists = TargetObject.objects.filter(pk=object_id).exists()
         if object_exists:
