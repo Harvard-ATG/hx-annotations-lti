@@ -2,8 +2,10 @@
 This tag library is intended to be used for manipulating annotation objects
 returned by the CATCH database.
 
-Example:
-
+TODO: many of these helper tags query the database on a per-annotation basis,
+which is potentially really inefficient. For larger sets of annotation objects,
+it would be better to pull out the database queries and use them to populate
+a separate data structure that could then be used to pull out the necessary information.
 '''
 
 from django.template.defaulttags import register
