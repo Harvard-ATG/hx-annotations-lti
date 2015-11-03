@@ -53,48 +53,6 @@ def format_tags(tagslist):
 		Pretty-prints list of tags
 	'''
 	return ', '.join(tagslist)
-	
-@register.simple_tag
-def get_assignment_name(collection_id):
-	# Filter for the assignment with assignment_id matching collection_id
-	try:
-		assignment = Assignment.objects.get(assignment_id=collection_id);
-		return unicode(assignment)
-	# TODO: Currently fails silently. Eventually we will want to improve the model design so this doesn't happen.
-	except:
-		return ''
-
-@register.simple_tag
-def get_target_object_name(object_id):
-	try:
-		targ_obj = TargetObject.objects.get(pk=object_id)
-		return unicode(targ_obj)
-	# TODO: Currently fails silently. Eventually we will want to improve the model design so this doesn't happen.
-	except:
-		return ''
-
-@register.assignment_tag
-def assignment_object_exists(object_id, collection_id):
-	'''
-		Checks to make sure that both the assignment and the target object exist
-	'''
-	try:
-		targ_obj = TargetObject.objects.get(pk=object_id)
-		assignment = Assignment.objects.get(assignment_id=collection_id);
-		return True
-	except:
-		return False
-
-@register.simple_tag
-def get_annotation_by_id(annotation_id, annotations):
-	'''
-		Given the id of an annotation and a dictionary of annotations keyed by id,
-		this returns the text of the annotation with that id	
-	'''
-	annotation_id = int(annotation_id)
-	if annotation_id in annotations:
-		return annotations[annotation_id]['text']
-	return '<i>Deleted Annotation</i>'
 
 @register.simple_tag
 def get_url_to_annotation_manual(**kwargs):

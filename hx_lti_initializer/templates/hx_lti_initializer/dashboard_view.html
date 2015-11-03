@@ -1,5 +1,6 @@
 {% extends 'hx_lti_initializer/base.html' %}
 {% load hx_lti_initializer_extras %}
+{% load annotation_helper_tags %}
 {% load static from staticfiles %} 
 {# Load the tag library #} 
 {% load bootstrap3 %} 
@@ -11,95 +12,83 @@
 
 
 {% block content %}
-        {% if user_objects %}
-            <div style="margin: 1em 0;">
-                <div class="input-group">
-                    <div class="input-group-btn search-panel">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        	<span id="search_concept">By Name</span> <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#name">By Name</a></li>
-                            <li><a href="#content">By Content</a></li>
-                        </ul>
-                    </div>
-                    <input type="text" id="studentsearch" class="form-control" placeholder="Filter users...">
-                    <input type="hidden" name="search_param" value="name" id="search_param">
-                </div>
-                <div id="student_list" class="list-group">
-                    <br/>
-                    {% for user in user_objects %}
-                    <div>
-                        <div class="panel-group" id="accordion">
-                            <div class="panel panel-default">
-                                <div data-toggle="collapse" data-parent="#accordion" href="#{{ user.id }}" class="panel-heading list-group-item" style="cursor: pointer;">
-                                    <h4 class="panel-title">
-                                        {{ user.name }}
-                                    </h4>
-                                </div>
-                                <div id="{{ user.id }}" class="panel-collapse collapse">
-                                    <div class="panel-body">
-                                            <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <!-- Only Date isn't of variable length -->
-                                                    <th class="col-md-1">Date</th>
-                                                    <th>Assignment</th>
-                                                    <th>Object</th>
-                                                    <th>Line</th>
-                                                    <th>Annotation</th>
-                                                    <th>Tags</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for annotation in user.annotations %}
-                                                <!-- TODO: Test with assignment deletion -->
-                                                {% assignment_object_exists annotation.uri annotation.collectionId as exists %}
-                                                {% if exists %}
-                                                <tr>
-                                                    <!-- TODO: Time formatting ok? -->
-                                                    <!-- Last updated or date created? -->
-                                                    <td> {{ annotation.updated | format_date }} </td> 
-                                                    <!-- TODO: url according to protocol? -->
-                                                    <td>
-                                                        {% get_assignment_name annotation.collectionId %}
-                                                    </td>
-                                                    <td>
-                                                        <a href="admin_hub/{{ annotation.contextId }}/{{ annotation.collectionId }}/{{ annotation.uri }}/preview/">
-                                                            {% get_target_object_name annotation.uri %}
-                                                        </a>
-                                                    </td>
-                                                    <td>
-                                                        {% if annotation.parent == "0" %}
-                                                            "{{ annotation.quote }}"
-                                                        {% else %}
-                                                            <b>Reply To:</b> "{% get_annotation_by_id annotation.parent annotation_dict %}"
-                                                        {% endif %}
-                                                    </td>
-                                                    <td>{{ annotation.text | safe }}</td>
-                                                    
-                                                    <td>{{ annotation.tags | format_tags }}</td>
-                                                </tr>
-                                                {% endif %}
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                No annotations to display
-            </div>
-		{% endif %}
+
+{% if user_objects %}
+	<div style="margin: 1em 0;">
+		<div class="input-group">
+			<div class="input-group-btn search-panel">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+					<span id="search_concept">By Name</span> <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="#name">By Name</a></li>
+					<li><a href="#content">By Content</a></li>
+				</ul>
+			</div>
+			<input type="text" id="studentsearch" class="form-control" placeholder="Filter users...">
+			<input type="hidden" name="search_param" value="name" id="search_param">
+		</div>
+		<div id="student_list" class="list-group">
+			<br/>
+			{% for user in user_objects %}
+			<div>
+				<div class="panel-group" id="accordion">
+					<div class="panel panel-default">
+						<div data-toggle="collapse" data-parent="#accordion" href="#{{ user.id }}" class="panel-heading list-group-item" style="cursor: pointer;">
+							<h4 class="panel-title">{{ user.name }}</h4>
+						</div>
+						<div id="{{ user.id }}" class="panel-collapse collapse">
+							<div class="panel-body">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<!-- Only Date isn't of variable length -->
+											<th class="col-md-1">Date</th>
+											<th>Assignment</th>
+											<th>Object</th>
+											<th>Selection</th>
+											<th>Annotation</th>
+											<th>Tags</th>
+										</tr>
+									</thead>
+									<tbody>
+									{# Need to test this with deleted annotations #}
+									{% for annotation in user.annotations %}
+										{% annotation_assignment_object_exists annotation as exists %}
+										{% if exists %}
+										<tr>
+											<td>{{ annotation.updated | format_date }}</td> 
+											<td>{% annotation_assignment_name annotation %}</td>
+											<td><a href="{% annotation_preview_url annotation %}">{% annotation_target_object_name annotation %}</a></td>
+											<td>
+												{% if annotation.parent == "0" %}
+													{% annotation_selection annotation %}
+												{% else %}
+													<b>Reply To:</b> "{% annotation_lookup_by_id annotation.parent annotation_dict %}"
+												{% endif %}
+											</td>
+											<td>{{ annotation.text | safe }}</td>
+											<td>{{ annotation.tags | format_tags }}</td>
+										</tr>
+										{% endif %}
+									{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+		{% else %}
+		<div style="margin: 1em"><b>No annotations to display</b></div>
+	</div>
+{% endif %}
+
 <script>
 $(document).ready(function(){
-    // Search type (name by default)
-    var type = 'name';
-    // Get all panels 
+    var search_type = 'name';
     var $panels = $('.panel');
     
     // Handles toggling for search bar dropdown
@@ -110,7 +99,7 @@ $(document).ready(function(){
         $('.search-panel span#search_concept').text(concept);
         $('.input-group #search_param').val(param);
         // Update search type
-        type = param;
+        search_type = param;
         // Update view
         update($('#studentsearch').val().toLowerCase());
         
@@ -141,7 +130,7 @@ $(document).ready(function(){
         };
         
         // match search type to selector
-        var selector = selector_for[type];
+        var selector = selector_for[search_type];
         
         if (selector && value != '') {
             // Show panels that match user
@@ -154,4 +143,6 @@ $(document).ready(function(){
     }
 });
 </script>
+
 {% endblock %}
+
