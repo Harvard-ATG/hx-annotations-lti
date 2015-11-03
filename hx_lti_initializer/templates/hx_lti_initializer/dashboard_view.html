@@ -1,5 +1,6 @@
 {% extends 'hx_lti_initializer/base.html' %}
 {% load hx_lti_initializer_extras %}
+{% load annotation_helper_tags %}
 {% load static from staticfiles %} 
 {# Load the tag library #} 
 {% load bootstrap3 %} 
@@ -54,7 +55,7 @@
                                             <tbody>
                                                 {% for annotation in user.annotations %}
                                                 <!-- TODO: Test with assignment deletion -->
-                                                {% assignment_object_exists annotation.media annotation.uri annotation.collectionId as exists %}
+                                                {% annotation_assignment_object_exists annotation as exists %}
                                                 {% if exists %}
                                                 <tr>
                                                     <!-- TODO: Time formatting ok? -->
@@ -62,18 +63,18 @@
                                                     <td> {{ annotation.updated | format_date }} </td> 
                                                     <!-- TODO: url according to protocol? -->
                                                     <td>
-                                                        {% get_assignment_name annotation.collectionId %}
+                                                        {% annotation_assignment_name annotation %}
                                                     </td>
                                                     <td>
                                                         <a href="admin_hub/{{ annotation.contextId }}/{{ annotation.collectionId }}/{{ annotation.uri }}/preview/">
-                                                            {% get_target_object_name annotation.uri %}
+                                                            {% annotation_target_object_name annotation %}
                                                         </a>
                                                     </td>
                                                     <td>
                                                         {% if annotation.parent == "0" %}
-                                                            {% get_annotation_selection annotation.media annotation %}
+                                                            {% annotation_selection annotation %}
                                                         {% else %}
-                                                            <b>Reply To:</b> "{% get_annotation_by_id annotation.parent annotation_dict %}"
+                                                            <b>Reply To:</b> "{% annotation_lookup_by_id annotation.parent annotation_dict %}"
                                                         {% endif %}
                                                     </td>
                                                     <td>{{ annotation.text | safe }}</td>
