@@ -26,6 +26,7 @@ from hx_lti_assignment.models import Assignment, AssignmentTargets
 from hx_lti_initializer.forms import CourseForm
 from hx_lti_initializer.utils import (debug_printer, get_lti_value, retrieve_token, save_session,create_new_user, initialize_lti_tool_provider,
     validate_request, fetch_annotations_by_course, DashboardAnnotations)
+from hx_lti_initializer import annotation_database
 from django.conf import settings
 from abstract_base_classes.target_object_database_api import TOD_Implementation
 from django.contrib.sites.models import get_current_site
@@ -458,6 +459,9 @@ def annotation_database_search(request):
     '''
     session_collection_id = request.session['hx_collection_id']
     session_context_id = request.session['hx_context_id']
+    session_user_id = request.session['hx_user_id']
+    session_is_staff = request.session['is_staff']
+    session_is_instructor = request.session['is_instructor']
 
     request_collection_id = request.GET.get('collectionId', None)
     request_context_id = request.GET.get('contextId', None)
@@ -476,7 +480,15 @@ def annotation_database_search(request):
     }
 
     response = requests.post(database_url, headers=headers, params=url_values)
-    return HttpResponse(response)
+    if response.status_code == 200:
+        data = annotation_database.process_search_response(response.json(), user_id=session_user_id, has_read_perm=session_is_staff or session_is_instructor)
+        content = json.dumps(data)
+        content_type = "application/json"
+    else:
+        content = response.content
+        content_type = response.headers['content-type']
+
+    return HttpResponse(content, status=response.status_code, content_type=content_type)
 
 
 @csrf_exempt
