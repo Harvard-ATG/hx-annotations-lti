@@ -8,7 +8,7 @@ def process_search_response(data, user_id=None, has_read_perm=False):
     if has_read_perm is True:
         return data
 
-    # If we get here, that means the user has no special permissions (i.e instructor, staff, etc)
+    # If we get here, that means the user has no special permissions (i.e user is NOT instructor, staff, etc)
     # and they are using a non-HarvardX instance of the tool (i.e. ATG instance).
     # The code below checks the "read" permissions to return only the annotation(s) that the user
     # is authorized to read.
