@@ -9,6 +9,7 @@ LTI tool developed by HarvardX in collaboration with HUIT Academic Technology to
 Download and install [virtualbox](https://www.virtualbox.org/) and [vagrant](https://www.vagrantup.com/). Run the following commands to provision your virtual box:
 
 ```
+$ cp annotationsx/settings/secure.py.example annotationsx/settings/secure.py
 $ vagrant up                          # start and provision virtual box (see Vagrantfile)
 $ vagrant ssh                         # ssh into virtual box
 $ cd /vagrant                         # change to shared directory with code
