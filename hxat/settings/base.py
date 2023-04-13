@@ -29,7 +29,7 @@ DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 allowed_other_hosts = os.environ.get("ALLOWED_HOSTS", "")
 if allowed_other_hosts:
-    ALLOWED_HOSTS.extend(json.loads(allowed_other_hosts))
+    ALLOWED_HOSTS.extend(allowed_other_hosts.split())
 
 
 # Application definition
