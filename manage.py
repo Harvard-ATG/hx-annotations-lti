@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 try:
-    from dotenv import load_dotenv, find_dotenv
+    from dotenv import load_dotenv
 except:
     pass
 import os
 import sys
 
 if __name__ == "__main__":
-    load_dotenv(find_dotenv)
     dotenv_path = None
     if "HXAT_DOTENV_PATH" in os.environ:
         dotenv_path = os.environ["HXAT_DOTENV_PATH"]

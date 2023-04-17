@@ -13,8 +13,10 @@ import logging
 import os
 
 from django.contrib import messages
+from dotenv import load_dotenv, find_dotenv
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+load_dotenv(find_dotenv())
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "CHANGE_ME")
 
