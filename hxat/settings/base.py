@@ -13,9 +13,11 @@ import logging
 import os
 
 from django.contrib import messages
-
+from dotenv import load_dotenv
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+dotenv_path = os.path.join(".env")
+load_dotenv(dotenv_path)
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "CHANGE_ME")
 
@@ -84,7 +86,6 @@ DATABASES = {
         "PORT": os.environ.get("HXAT_DB_PORT", "5432"),
     }
 }
-print("ALLOWED_HOSTS=", ALLOWED_HOSTS, "\nHXAT_DB_HOST", os.environ.get("HXAT_DB_HOST", "localhost"))
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
