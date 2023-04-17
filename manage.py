@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 try:
-    from dotenv import load_dotenv
+    from dotenv import load_dotenv, find_dotenv
 except:
     pass
 import os
@@ -8,12 +8,11 @@ import sys
 
 if __name__ == "__main__":
     dotenv_path = None
+    load_dotenv(find_dotenv())
     if "HXAT_DOTENV_PATH" in os.environ:
         dotenv_path = os.environ["HXAT_DOTENV_PATH"]
-    elif os.path.exists(os.path.join("hxat", "settings", ".env")):
-        dotenv_path = os.path.join("hxat", "settings", ".env")
-    if dotenv_path:
-        load_dotenv(dotenv_path)
+
+    
 
     # define settings if not in environment
     if os.environ.get("DJANGO_SETTINGS_MODULE", None) is None:

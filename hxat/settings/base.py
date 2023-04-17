@@ -16,8 +16,6 @@ from django.contrib import messages
 from dotenv import load_dotenv, find_dotenv
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-load_dotenv(find_dotenv())
-print("HXAT_DB_HOST", os.environ.get("HXAT_DB_HOST", "localhost"))
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "CHANGE_ME")
 
