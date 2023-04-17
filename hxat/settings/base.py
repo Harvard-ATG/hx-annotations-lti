@@ -84,6 +84,7 @@ DATABASES = {
         "PORT": os.environ.get("HXAT_DB_PORT", "5432"),
     }
 }
+print("ALLOWED_HOSTS=", ALLOWED_HOSTS, "\nHXAT_DB_HOST", os.environ.get("HXAT_DB_HOST", "localhost"))
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
