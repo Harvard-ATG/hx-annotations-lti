@@ -17,6 +17,7 @@ from django.contrib import messages
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "CHANGE_ME")
+print("HOST=", os.environ.get("HXAT_DB_HOST", "localhost"), "\nPORT=", os.environ.get("HXAT_DB_PORT", "5432"))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # disambiguation when reading from env: env vars always strings so if

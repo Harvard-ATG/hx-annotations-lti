@@ -13,8 +13,8 @@ if __name__ == "__main__":
     elif os.path.exists(os.path.join("hxat", "settings", ".env")):
         dotenv_path = os.path.join("hxat", "settings", ".env")
     if dotenv_path:
+        print("loading dotenv....", "\nHXAT_DOTENV_PATH=", os.environ["HXAT_DOTENV_PATH"], "\nos.path exist=", os.path.exists(os.path.join("hxat", "settings", ".env")), "\ndotenv_path=",dotenv_path)
         load_dotenv(dotenv_path)
-    print("HXAT_DOTENV_PATH=", "HXAT_DOTENV_PATH" in os.environ,"\nos.path exist=", os.path.exists(os.path.join("hxat", "settings", ".env")), "\ndotenv_path=", dotenv_path)
 
     # define settings if not in environment
     if os.environ.get("DJANGO_SETTINGS_MODULE", None) is None:
