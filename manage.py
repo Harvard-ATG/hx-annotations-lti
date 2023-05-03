@@ -13,7 +13,6 @@ if __name__ == "__main__":
     elif os.path.exists(os.path.join("hxat", "settings", ".env")):
         dotenv_path = os.path.join("hxat", "settings", ".env")
     if dotenv_path:
-        print("loading dotenv....", "\nos.path exist=", os.path.exists(os.path.join("hxat", "settings", ".env")), "\ndotenv_path=",dotenv_path)
         load_dotenv(dotenv_path)
 
     # define settings if not in environment

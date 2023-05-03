@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hxat.settings.prod")
 
 # if dotenv file, load it
-dotenv_path = os.environ.get("HXAT_DOTENV_PATH", None)
+dotenv_path = os.environ.get("HXAT_DOTENV_PATH", "./hxat/settings/.env")
 if dotenv_path:
     load_dotenv(dotenv_path=dotenv_path, override=True)
 
