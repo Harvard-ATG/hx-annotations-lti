@@ -1,1 +1,2 @@
-__version__ = "5.3.0"  # atg pr#164; fixes in unit tests
+__version__ = "6.1.0"  # transfer in UI; profile (anon_id, scope) uniq restriction (require catchpy 2.6.0)
+

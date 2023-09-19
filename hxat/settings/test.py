@@ -4,6 +4,7 @@ from .base import *
 
 # for harvardx tests
 ORGANIZATION = "HARVARDX"
+PLATFORM = "edx"
 
 # django secret must not be empty
 SECRET_KEY = "SECRET"
@@ -59,13 +60,16 @@ TEST_COURSE_LTI_SECRET = "lti_secret_from_LTI_SECRET_DICT"
 LTI_SECRET_DICT = {
     TEST_COURSE: TEST_COURSE_LTI_SECRET,
 }
-ADMIN_ROLES = {"Administrator", "Instructor"}
 
 ANNOTATION_DB_URL = "http://default.annotation.db.url.org"
 ANNOTATION_DB_API_KEY = "default_annotation_db_api_key"
 ANNOTATION_DB_SECRET_TOKEN = "default_annotation_db_secret_token"
 
-CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer",}}
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}
 
 # redefine logging configs to NOT log in files, just console thank you
 LOGGING = {
@@ -76,7 +80,9 @@ LOGGING = {
             "format": "%(levelname)s\t%(asctime)s.%(msecs)03dZ\t%(name)s:%(lineno)s\t%(message)s",
             "datefmt": "%Y-%m-%dT%H:%M:%S",
         },
-        "simple": {"format": "%(levelname)s\t%(name)s:%(lineno)s\t%(message)s",},
+        "simple": {
+            "format": "%(levelname)s\t%(name)s:%(lineno)s\t%(message)s",
+        },
     },
     "handlers": {
         "console": {
@@ -86,11 +92,18 @@ LOGGING = {
             "stream": "ext://sys.stdout",
         },
     },
-    "root": {"level": "INFO", "handlers": ["console"],},
+    "root": {
+        "level": "INFO",
+        "handlers": ["console"],
+    },
     "loggers": {
         # Make sure that propagate is False so that the root logger doesn't get involved
         # after an app logger handles a log message.
-        "django": {"level": "INFO", "handlers": ["console"], "propagate": False,},
+        "django": {
+            "level": "INFO",
+            "handlers": ["console"],
+            "propagate": False,
+        },
         "django.request": {
             "level": "INFO",
             "handlers": ["console"],
@@ -116,12 +129,22 @@ LOGGING = {
             "handlers": ["console"],
             "propagate": False,
         },
-        "annotation_store": {
+        "annostore": {
+            "level": "DEBUG",
+            "handlers": ["console"],
+            "propagate": False,
+        },
+        "annostore": {
             "level": "DEBUG",
             "handlers": ["console"],
             "propagate": False,
         },
         "hxat.middleware": {
+            "level": "DEBUG",
+            "handlers": ["console"],
+            "propagate": False,
+        },
+        "hxat": {
             "level": "DEBUG",
             "handlers": ["console"],
             "propagate": False,
